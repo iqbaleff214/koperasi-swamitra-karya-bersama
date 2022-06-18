@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LoanController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,9 +24,21 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::middleware('auth')->group(function() {
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-    Route::get('/profile', [HomeController::class, 'profile'])->name('profile.show');
-    Route::post('/profile', [HomeController::class, 'update'])->name('profile.update');
+    Route::resource('/karyawan', UserController::class, ['names' => 'user']);
+    Route::resource('/nasabah', CustomerController::class, ['names' => 'customer']);
+
+    Route::post('/karyawan/cetak', [UserController::class, 'print'])->name('user.print');
+    Route::post('/nasabah/cetak', [CustomerController::class, 'print'])->name('customer.print');
+
+    Route::as('transaction.')->prefix('transaksi')->group(function() {
+        Route::resource('/pinjaman', LoanController::class, ['names' => 'loan']);
+
+        Route::post('/pinjaman/cetak', [LoanController::class, 'print'])->name('loan.print');
+    });
+
+    Route::get('/pengaturan', [HomeController::class, 'profile'])->name('profile.show');
+    Route::post('/pengaturan', [HomeController::class, 'update'])->name('profile.update');
 });
 

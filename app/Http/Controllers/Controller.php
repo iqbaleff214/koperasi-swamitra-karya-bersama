@@ -10,4 +10,10 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    protected $title = "Dashboard";
+
+    protected function buildTitle($section = 'section') {
+        return "{$this->title} <span class=\"font-weight-light h5\">$section</span>";
+    }
 }

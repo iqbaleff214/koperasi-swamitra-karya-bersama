@@ -16,14 +16,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('dashboard', [
+        return view('pages.dashboard', [
             'title' => 'Dashboard'
         ]);
     }
 
     public function profile()
     {
-        return view('profile', [
+        return view('pages.profile', [
             'title' => 'Pengaturan',
             'profile' => Auth::user()
         ]);
