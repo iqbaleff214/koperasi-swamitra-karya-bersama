@@ -26,15 +26,15 @@ class DatabaseSeeder extends Seeder
         $users = [
             [
                 'name' => 'Manajer',
-                'email' => 'manajer@swamitra.com',
+                'username' => 'manajer',
                 'password' => Hash::make('admin'),
                 'role' => 'manager',
                 'phone' => '0821',
-                'joined_at' => Carbon::now(),
+                'joined_at' => Carbon::now()->subDay(),
             ],
             [
                 'name' => 'Teller',
-                'email' => 'teller@swamitra.com',
+                'username' => 'teller',
                 'password' => Hash::make('admin'),
                 'role' => 'teller',
                 'phone' => '0822',
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Collector',
-                'email' => 'kolektor@swamitra.com',
+                'username' => 'kolektor',
                 'password' => Hash::make('admin'),
                 'role' => 'collector',
                 'phone' => '0823',

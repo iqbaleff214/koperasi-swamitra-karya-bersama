@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('birth')->nullable();
             $table->string('last_education')->nullable();
             $table->string('address')->nullable();
-            $table->string('phone')->unique();
+            $table->string('phone')->nullable()->unique();
             $table->dateTime('joined_at')->nullable();
             $table->enum('role', ['manager', 'teller', 'collector'])->default('collector');
             $table->string('photo')->nullable();
