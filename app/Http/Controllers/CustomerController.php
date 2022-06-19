@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Customer;
+use App\Models\Deposit;
 use App\Models\User;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
 class CustomerController extends Controller
@@ -75,10 +77,21 @@ class CustomerController extends Controller
     public function store(StoreCustomerRequest $request)
     {
         try {
-            $data = $request->all();
-            Customer::create($data);
+            DB::beginTransaction();
+
+            $data = $request->except('amount');
+            $customer = Customer::create($data);
+            Deposit::create([
+                'amount' => $request->get('amount'),
+                'current_balance' => $request->get('amount'),
+                'type' => 'pokok',
+                'customer_id' => $customer->id,
+            ]);
+
+            DB::commit();
             return redirect()->route('customer.index')->with('success', 'Berhasil menambahkan nasabah!');
         } catch (\Throwable $th) {
+            DB::rollBack();
             return back()->with('error', $th->getMessage());
         }
     }
@@ -91,6 +104,12 @@ class CustomerController extends Controller
      */
     public function show(Customer $nasabah)
     {
+        // $data = Deposit::selectRaw("customer_id, DATE(created_at) as tanggal, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) as pokok, SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) as sukarela, SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END) as wajib, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) + SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) + SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END) AS saldo")->where('customer_id', 5)->groupByRaw('customer_id, DATE(created_at)')->orderByRaw('DATE(created_at) DESC')->get();
+        // dd($data);
+        // SELECT SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) as pokok, SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) as sukarela, SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END) as wajib, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) + SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) + SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END)  AS saldo FROM deposits WHERE customer_id = 5;
+        // SELECT customer_id, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) as pokok, SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) as sukarela, SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END) as wajib, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) + SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) + SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END)  AS saldo FROM deposits GROUP By customer_id;
+        // SELECT DATE(created_at) as tanggal, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) as pokok, SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) as sukarela, SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END) as wajib, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) + SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) + SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END)  AS saldo FROM deposits WHERE customer_id = 5 GROUP BY DATE(created_at);
+        // SELECT customer_id, DATE(created_at) as tanggal, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) as pokok, SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) as sukarela, SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END) as wajib, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) + SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) + SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END)  AS saldo FROM deposits GROUP BY customer_id, DATE(created_at);
         return view('pages.customer.show', [
             'title' => $this->buildTitle('detail'),
             'user' => $nasabah

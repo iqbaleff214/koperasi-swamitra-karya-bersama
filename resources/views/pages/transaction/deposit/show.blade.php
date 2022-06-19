@@ -16,53 +16,36 @@
                                 <div class="form-group">
                                     <label>Tanggal</label>
                                     <input type="text" class="form-control-plaintext"
-                                        value="{{ $loan->created_at->isoFormat('D MMMM Y') }}" disabled>
+                                        value="{{ $deposit->created_at->isoFormat('D MMMM Y') }}" disabled>
                                 </div>
                                 <div class="form-group">
                                     <label>Nasabah</label>
                                     <input type="text" class="form-control-plaintext"
-                                        value="{{ $loan->customer->number . ' - ' . $loan->customer->name }}"
+                                        value="{{ $deposit->customer->number . ' - ' . $deposit->customer->name }}"
                                         placeholder="Nasabah" disabled>
                                 </div>
                                 <div class="form-group">
-                                    <label>Nominal Pinjaman (Rp)</label>
+                                    <label>Nominal Simpan (Rp)</label>
                                     <input type="text" class="form-control-plaintext"
-                                        value="Rp{{ number_format($loan->amount, 2, ',', '.') }}" disabled>
+                                        value="Rp{{ number_format($deposit->amount, 2, ',', '.') }}" disabled>
                                 </div>
                                 <div class="form-group">
-                                    <label>Jangka Waktu (Bulan)</label>
+                                    <label>Saldo Sebelumnya (Rp)</label>
                                     <input type="text" class="form-control-plaintext"
-                                        value="{{ $loan->period }} (bulan) kali cicilan"
-                                        placeholder="Jangka Waktu (Bulan)" disabled>
+                                        value="Rp{{ number_format($deposit->previous_balance, 2, ',', '.') }}" disabled>
                                 </div>
                                 <div class="form-group">
-                                    <label>Nominal Angsuran (Rp)</label>
+                                    <label>Saldo Akhir (Rp)</label>
                                     <input type="text" class="form-control-plaintext"
-                                        value="Rp{{ number_format($loan->installment, 2, ',', '.') }}" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label>Nominal Pengembalian (Rp)</label>
-                                    <input type="text" class="form-control-plaintext"
-                                        value="Rp{{ number_format($loan->return_amount, 2, ',', '.') }}" disabled>
+                                        value="Rp{{ number_format($deposit->current_balance, 2, ',', '.') }}" disabled>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label>Barang Jaminan</label>
+                                    <label>Jenis Simpanan</label>
                                     <input type="text" class="form-control-plaintext"
-                                        value="{{ old('name', $loan->collateral->name) }}" placeholder="Barang Jaminan"
-                                        disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label>Nilai Jaminan (Rp)</label>
-                                    <input type="text" class="form-control-plaintext"
-                                        value="Rp{{ number_format($loan->collateral->value, 2, ',', '.') }}" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label>Keterangan</label>
-                                    <input type="text" class="form-control-plaintext"
-                                        value="{{ old('description', $loan->collateral->description) }}"
-                                        placeholder="Keterangan" disabled>
+                                        value="{{ ucfirst($deposit->type) }}"
+                                        placeholder="Jenis Simpanan" disabled>
                                 </div>
                             </div>
                         </div>

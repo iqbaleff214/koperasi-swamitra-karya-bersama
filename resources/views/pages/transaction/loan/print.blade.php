@@ -39,9 +39,9 @@
                 <td>{{ $item->customer->number }}</td>
                 <td>{{ $item->customer->name }}</td>
                 <td>{{ $item->collateral->name }}</td>
-                <td>Rp{{ number_format($item->amount, 2, ',', '.') }}</td>
+                <td class="text-right">Rp{{ number_format($item->amount, 2, ',', '.') }}</td>
                 <td>{{ $item->period }}</td>
-                <td>Rp{{ number_format($item->installment, 2, ',', '.') }}</td>
+                <td class="text-right">Rp{{ number_format($item->installment, 2, ',', '.') }}</td>
             </tr>
         @endforeach
     </tbody>

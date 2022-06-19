@@ -12,6 +12,10 @@
                             <div class="row">
                                 <div class="col-12 col-md-6">
                                     <div class="form-group">
+                                        <label>Kode Transaksi</label>
+                                        <input type="text" class="form-control" value="{{ $code }}" disabled>
+                                    </div>
+                                    <div class="form-group">
                                         <label>Tanggal</label>
                                         <input type="date" max="{{ date('Y-m-d') }}" value="{{ old('created_at', date('Y-m-d', strtotime($loan->created_at))) }}" class="form-control @error('created_at') is-invalid @enderror" name="created_at" value="{{ old('created_at') }}" readonly placeholder="Tanggal Daftar">
                                         <span class="error invalid-feedback">{{ $errors->first('created_at') }}</span>

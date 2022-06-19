@@ -34,6 +34,8 @@ class StoreCustomerRequest extends FormRequest
             'phone' => ['required', Rule::unique('customers', 'phone')],
             'last_education' => 'required',
             'profession' => 'required',
+
+            'amount' => ['required', 'numeric', 'gt:0'],
         ];
     }
 }

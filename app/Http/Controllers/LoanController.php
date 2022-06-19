@@ -19,6 +19,7 @@ class LoanController extends Controller
     public function __construct()
     {
         $this->title = 'Transaksi - Pinjaman';
+        $this->code = 'PI';
     }
 
     /**
@@ -49,6 +50,9 @@ class LoanController extends Controller
                                 <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                 <button type="submit" class="btn btn-danger btn-xs px-2 delete-data"> Hapus </button>
                             </form>';
+                })
+                ->editColumn('id', function($row) {
+                    return $this->buildTransactionCode($row->id);
                 })
                 ->editColumn('created_at', function($row) {
                     return Carbon::parse($row->created_at)->isoFormat('DD-MM-Y');
@@ -122,6 +126,7 @@ class LoanController extends Controller
     {
         return view('pages.transaction.loan.show', [
             'title' => $this->buildTitle('detail'),
+            'code' => $this->buildTransactionCode($pinjaman->id),
             'loan' => $pinjaman,
         ]);
     }
@@ -136,6 +141,7 @@ class LoanController extends Controller
     {
         return view('pages.transaction.loan.edit', [
             'title' => $this->buildTitle('edit'),
+            'code' => $this->buildTransactionCode($pinjaman->id),
             'loan' => $pinjaman,
         ]);
     }

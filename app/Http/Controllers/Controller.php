@@ -12,8 +12,13 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     protected $title = "Dashboard";
+    protected $code = "SK";
 
     protected function buildTitle($section = 'section') {
         return "{$this->title} <span class=\"font-weight-light h5\">$section</span>";
+    }
+
+    protected function buildTransactionCode($id) {
+        return sprintf($this->code . "-%05d", $id);
     }
 }

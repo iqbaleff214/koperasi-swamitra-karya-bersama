@@ -7,16 +7,32 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row mb-3">
-                            <div class="col">
-                                <a href="{{ route('transaction.loan.create') }}" class="btn btn-success">Baru</a>
+                            <div class="col-4">
+                                <a href="{{ route('transaction.deposit.create') }}" class="btn btn-success">Baru</a>
                                 <button class="btn btn-outline-success" data-toggle="modal"
                                     data-target="#print">Cetak</button>
                             </div>
-                            <div class="col row">
-                                <div class="col-12 col-md-6">
+                            <div class="col-8 row">
+                                <div class="col-12 col-md-3">
+                                    <select class="form-control" name="customer">
+                                        <option value="">Semua Nasabah</option>
+                                        @foreach ($customers as $customer)
+                                        <option value="{{ $customer->id }}">{{ $customer->number . ' - ' . $customer->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <select class="form-control" name="type">
+                                        <option value="">Semua Jenis</option>
+                                        @foreach ($types as $type)
+                                        <option value="{{ $type }}">{{ ucfirst($type) }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-3">
                                     <input type="date" class="form-control date-filter" name="time_from" placeholder="Sejak">
                                 </div>
-                                <div class="col-12 col-md-6">
+                                <div class="col-12 col-md-3">
                                     <input type="date" class="form-control date-filter" name="time_to" placeholder="Hingga">
                                 </div>
                             </div>
@@ -26,10 +42,10 @@
                                 <tr class="text-center">
                                     <th style="width: 60px">#</th>
                                     <th style="width: 70px;">Tanggal</th>
+                                    <th>Jenis</th>
                                     <th>Nasabah</th>
-                                    <th>Jaminan</th>
-                                    <th>Pinjaman</th>
-                                    <th>Cicilan</th>
+                                    <th>Nominal</th>
+                                    <th>Saldo</th>
                                     <th style="width: 150px;">Aksi</th>
                                 </tr>
                             </thead>
@@ -49,7 +65,7 @@
     <div class="modal fade" id="print" tabindex="-1" aria-labelledby="printLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="{{ route('transaction.loan.print') }}" method="post">
+                <form action="{{ route('transaction.deposit.print') }}" method="post">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="printLabel">Cetak Laporan</h5>
@@ -59,16 +75,14 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-12 col-md-6">
+                            <div class="col">
                                 <div class="form-group">
-                                    <label>Sejak</label>
-                                    <input required type="date" class="form-control" name="time_from" value="{{ date('Y-m-d') }}" placeholder="Sejak">
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <div class="form-group">
-                                    <label>Hingga</label>
-                                    <input required type="date" class="form-control" name="time_to" value="{{ date('Y-m-d') }}" placeholder="Sejak">
+                                    <label>Nasabah</label>
+                                    <select class="form-control" name="customer_id">
+                                        @foreach ($customers as $customer)
+                                        <option value="{{ $customer->id }}">{{ $customer->number . ' - ' . $customer->name . ' - ' . $customer->nik }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -99,14 +113,18 @@
 
     <script>
         $(function() {
+            let customerId = null;
             let timeFrom = null;
             let timeTo = null;
+            let type = null;
 
             //Initialize Datatables Elements
             const dtTable = $('#datatable-bs').DataTable({
                 ajax: {
                     url: "{!! url()->current() !!}",
                     data: function (d) {
+                        d.customer = customerId;
+                        d.type = type;
                         d.from = timeFrom;
                         d.to = timeTo;
                     }
@@ -130,14 +148,12 @@
                         name: 'created_at'
                     },
                     {
-                        data: 'customer',
-                        name: 'customer',
-                        orderable: false,
-                        searchable: false
+                        data: 'type',
+                        name: 'type',
                     },
                     {
-                        data: 'collateral',
-                        name: 'collateral',
+                        data: 'customer',
+                        name: 'customer',
                         orderable: false,
                         searchable: false
                     },
@@ -146,8 +162,8 @@
                         name: 'amount'
                     },
                     {
-                        data: 'installment',
-                        name: 'installment'
+                        data: 'current_balance',
+                        name: 'current_balance'
                     },
                     {
                         data: 'action',
@@ -156,6 +172,16 @@
                         searchable: false
                     },
                 ]
+            });
+
+            $('select[name=type]').on('change', function() {
+                type = $(this).val();
+                dtTable.draw();
+            });
+
+            $('select[name=customer]').on('change', function() {
+                customerId = $(this).val();
+                dtTable.draw();
             });
 
             $('.date-filter').on('change', function() {
