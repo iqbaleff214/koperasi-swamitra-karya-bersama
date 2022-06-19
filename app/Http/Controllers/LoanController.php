@@ -43,13 +43,21 @@ class LoanController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    return '<a href="' . route('transaction.loan.show', $row) . '" class="btn btn-success btn-xs px-2"> Detail </a>
-                            <a href="' . route('transaction.loan.edit', $row) . '" class="btn btn-primary btn-xs px-2 mx-1"> Edit </a>
-                            <form class="d-inline" method="POST" action="' . route('transaction.loan.destroy', $row) . '">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="' . csrf_token() . '" />
-                                <button type="submit" class="btn btn-danger btn-xs px-2 delete-data"> Hapus </button>
-                            </form>';
+                    if ($row->customer) {
+                        return '<a href="' . route('transaction.loan.show', $row) . '" class="btn btn-success btn-xs px-2"> Detail </a>
+                                <a href="' . route('transaction.loan.edit', $row) . '" class="btn btn-primary btn-xs px-2 mx-1"> Edit </a>
+                                <form class="d-inline" method="POST" action="' . route('transaction.loan.destroy', $row) . '">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="_token" value="' . csrf_token() . '" />
+                                    <button type="submit" class="btn btn-danger btn-xs px-2 delete-data"> Hapus </button>
+                                </form>';
+                    }
+
+                    return '<form class="d-inline" method="POST" action="' . route('transaction.loan.destroy', $row) . '">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="' . csrf_token() . '" />
+                        <button type="submit" class="btn btn-danger btn-xs px-2 delete-data"> Hapus </button>
+                    </form>';
                 })
                 ->editColumn('id', function($row) {
                     return $this->buildTransactionCode($row->id);
