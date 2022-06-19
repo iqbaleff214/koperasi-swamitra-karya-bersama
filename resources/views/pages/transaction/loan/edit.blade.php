@@ -22,22 +22,22 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Nominal Pinjaman (Rp)</label>
-                                        <input type="number" min="0" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount', $loan->amount) }}" placeholder="Nominal Pinjaman">
+                                        <input type="number" min="0" class="form-control change-installment @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount', $loan->amount) }}" placeholder="Nominal Pinjaman">
                                         <span class="error invalid-feedback">{{ $errors->first('amount') }}</span>
                                     </div>
                                     <div class="form-group">
                                         <label>Jangka Waktu (Bulan)</label>
-                                        <input type="number" min="1" class="form-control @error('period') is-invalid @enderror" name="period" value="{{ old('period', $loan->period) }}" placeholder="Jangka Waktu (Bulan)">
+                                        <input type="number" min="1" class="form-control change-installment change-amount @error('period') is-invalid @enderror" name="period" value="{{ old('period', $loan->period) }}" placeholder="Jangka Waktu (Bulan)">
                                         <span class="error invalid-feedback">{{ $errors->first('period') }}</span>
                                     </div>
                                     <div class="form-group">
                                         <label>Nominal Angsuran (Rp)</label>
-                                        <input type="number" min="0" class="form-control @error('installment') is-invalid @enderror" name="installment" value="{{ old('installment', $loan->installment) }}" placeholder="Nominal Angsuran">
+                                        <input type="number" min="0" class="form-control change-amount @error('installment') is-invalid @enderror" name="installment" value="{{ old('installment', $loan->installment) }}" placeholder="Nominal Angsuran">
                                         <span class="error invalid-feedback">{{ $errors->first('installment') }}</span>
                                     </div>
                                     <div class="form-group">
                                         <label>Nominal Pengembalian (Rp)</label>
-                                        <input type="number" min="0" class="form-control @error('return_amount') is-invalid @enderror" name="return_amount" value="{{ old('return_amount', $loan->return_amount) }}" placeholder="Nominal Pengembalian">
+                                        <input type="number" readonly min="0" class="form-control @error('return_amount') is-invalid @enderror" name="return_amount" value="{{ old('return_amount', $loan->return_amount) }}" placeholder="Nominal Pengembalian">
                                         <span class="error invalid-feedback">{{ $errors->first('return_amount') }}</span>
                                     </div>
                                 </div>
@@ -67,3 +67,34 @@
     </div><!-- /.container-fluid -->
     <!-- /.content -->
 @endsection
+
+@push('script')
+<script>
+    $(function() {
+        $('.change-installment').on('change', function() {
+            const amount = $('input[name=amount]').val();
+            const period = $('input[name=period]').val();
+
+            const installment = setInstallment(amount, period);
+            setReturnAmount(period, installment);
+        });
+        $('.change-amount').on('change', function() {
+            const period = $('input[name=period]').val();
+            const installment = $('input[name=installment]').val();
+            setReturnAmount(period, installment);
+        });
+    });
+
+    function setInstallment(amount, period) {
+        const expectedInstallment = parseInt(amount / period);
+        $('input[name=installment]').val(expectedInstallment);
+        return expectedInstallment;
+    }
+
+    function setReturnAmount(period, installment) {
+        const returnAmount = period * installment;
+        $('input[name=return_amount]').val(returnAmount);
+        return returnAmount;
+    }
+</script>
+@endpush

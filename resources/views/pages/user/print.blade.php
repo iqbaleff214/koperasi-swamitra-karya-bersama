@@ -4,9 +4,9 @@
 <table style="width: 100%">
     <tr>
         <td style="width: 15%" class="font-weight-bold">Dicetak:</td>
-        <td style="width: 55%">{{ $user->name . ' (' . $user->username . ')' }}</td>
+        <td style="width: 50%">{{ $user->name . ' (' . $user->username . ')' }}</td>
         <td style="width: 15%" class="font-weight-bold">Tanggal Cetak:</td>
-        <td style="width: 15%; text-align: right">{{ $date }}</td>
+        <td style="width: 20%; text-align: right">{{ $date }}</td>
     </tr>
     <tr>
         <td class="font-weight-bold">Filter:</td>
@@ -21,13 +21,13 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th scope="col">No.</th>
+            <th scope="col">No</th>
             <th scope="col">Nama</th>
             <th scope="col">JK</th>
             <th scope="col">Tgl Lahir</th>
             <th scope="col">Pendidikan</th>
             <th scope="col">Alamat</th>
-            <th scope="col">Nomor Telepon</th>
+            <th scope="col">No Telepon</th>
             <th scope="col">Mulai Bekerja</th>
             <th scope="col">Divisi</th>
         </tr>

@@ -29,7 +29,17 @@ class LoanController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            return DataTables::of(Loan::with(['customer', 'collateral']))
+            $data = Loan::with(['customer', 'collateral']);
+
+            if ($request->from) {
+                $data = $data->whereDate('created_at', '>=', $request->from);
+            }
+
+            if ($request->to) {
+                $data = $data->whereDate('created_at', '<=', $request->to);
+            }
+
+            return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     return '<a href="' . route('transaction.loan.show', $row) . '" class="btn btn-success btn-xs px-2"> Detail </a>

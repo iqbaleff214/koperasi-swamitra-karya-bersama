@@ -12,6 +12,14 @@
                                 <button class="btn btn-outline-success" data-toggle="modal"
                                     data-target="#print">Cetak</button>
                             </div>
+                            <div class="col row">
+                                <div class="col-12 col-md-6">
+                                    <input type="date" class="form-control date-filter" name="time_from" placeholder="Sejak">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <input type="date" class="form-control date-filter" name="time_to" placeholder="Hingga">
+                                </div>
+                            </div>
                         </div>
                         <table id="datatable-bs" class="table table-bordered table-hover">
                             <thead>
@@ -54,13 +62,13 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label>Sejak</label>
-                                    <input required type="date" value="{{ date('Y-m-d') }}" class="form-control" name="time_from" value="{{ date('Y-m-d') }}" placeholder="Sejak">
+                                    <input required type="date" class="form-control" name="time_from" value="{{ date('Y-m-d') }}" placeholder="Sejak">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label>Hingga</label>
-                                    <input required type="date" value="{{ date('Y-m-d') }}" class="form-control" name="time_to" value="{{ date('Y-m-d') }}" placeholder="Sejak">
+                                    <input required type="date" class="form-control" name="time_to" value="{{ date('Y-m-d') }}" placeholder="Sejak">
                                 </div>
                             </div>
                         </div>
@@ -91,10 +99,18 @@
 
     <script>
         $(function() {
+            let timeFrom = null;
+            let timeTo = null;
 
             //Initialize Datatables Elements
-            $('#datatable-bs').DataTable({
-                ajax: "{!! url()->current() !!}",
+            const dtTable = $('#datatable-bs').DataTable({
+                ajax: {
+                    url: "{!! url()->current() !!}",
+                    data: function (d) {
+                        d.from = timeFrom;
+                        d.to = timeTo;
+                    }
+                },
                 autoWidth: false,
                 responsive: true,
                 processing: true,
@@ -140,6 +156,21 @@
                         searchable: false
                     },
                 ]
+            });
+
+            $('.date-filter').on('change', function() {
+                const filterName = $(this).attr('name');
+                const filterValue = $(this).val();
+
+                if (filterName == 'time_from') {
+                    timeFrom = filterValue;
+                } else {
+                    timeTo = filterValue;
+                }
+
+                console.log(timeFrom, timeTo);
+
+                dtTable.draw();
             });
         });
     </script>

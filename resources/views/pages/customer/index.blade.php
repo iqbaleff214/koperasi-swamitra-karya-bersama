@@ -54,13 +54,13 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label>Sejak</label>
-                                    <input required type="date" value="{{ date('Y-m-d') }}" class="form-control" name="time_from" value="{{ date('Y-m-d') }}" placeholder="Sejak">
+                                    <input required type="date" value="{{ date('Y-m-d') }}" class="form-control" name="time_from" placeholder="Sejak">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label>Hingga</label>
-                                    <input required type="date" value="{{ date('Y-m-d') }}" class="form-control" name="time_to" value="{{ date('Y-m-d') }}" placeholder="Sejak">
+                                    <input required type="date" value="{{ date('Y-m-d') }}" class="form-control" name="time_to" placeholder="Sejak">
                                 </div>
                             </div>
                         </div>
