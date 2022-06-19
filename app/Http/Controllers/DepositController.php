@@ -176,7 +176,6 @@ class DepositController extends Controller
             $simpanan->update($request->all());
             return back()->with('success', 'Berhasil mengedit simpanan nasabah!');
         } catch (\Throwable $th) {
-            dd($th);
             return back()->with('error', $th->getMessage());
         }
     }
@@ -189,7 +188,12 @@ class DepositController extends Controller
      */
     public function destroy(Deposit $simpanan)
     {
-        //
+        try {
+            $simpanan->delete();
+            return back()->with('success', 'Berhasil menghapus simpanan nasabah!');
+        } catch (\Throwable $th) {
+            return back()->with('error', $th->getMessage());
+        }
     }
 
     public function print(Request $request)
