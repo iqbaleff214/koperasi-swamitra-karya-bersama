@@ -199,6 +199,6 @@ class DepositController extends Controller
         ]);
         $pdf->setPaper('A4', 'landscape');
 
-        return $pdf->stream($filename);
+        return $pdf->download($filename);
     }
 }
