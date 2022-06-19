@@ -58,10 +58,18 @@ class LoanController extends Controller
                     return Carbon::parse($row->created_at)->isoFormat('DD-MM-Y');
                 })
                 ->editColumn('customer', function($row) {
-                    return $row->customer->name . '<small class="small d-block">No. Rek: ' . $row->customer->number . '</small>';
+                    if ($row->customer) {
+                        return $row->customer->name . '<small class="small d-block">No. Rek: ' . $row->customer->number . '</small>';
+                    }
+
+                    return 'Nasabah Tidak Ditemukan';
                 })
                 ->editColumn('collateral', function($row) {
-                    return $row->collateral->name . '<small class="small d-block">Rp' . number_format($row->collateral->value, 2, ',', '.') . '</small>';
+                    if ($row->collateral) {
+                        return $row->collateral->name . '<small class="small d-block">Rp' . number_format($row->collateral->value, 2, ',', '.') . '</small>';
+                    }
+
+                    return 'Jaminan Tidak Ditemukan';
                 })
                 ->editColumn('installment', function($row) {
                     return $row->period . ' x Rp' . number_format($row->installment, 2, ',', '.') . '<small class="small d-block">= Rp' . number_format($row->return_amount, 2, ',', '.') . '</small>';

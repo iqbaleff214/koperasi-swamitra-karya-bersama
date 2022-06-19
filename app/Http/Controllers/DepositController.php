@@ -67,7 +67,11 @@ class DepositController extends Controller
                     return ucfirst($row->type);
                 })
                 ->editColumn('customer', function($row) {
-                    return $row->customer->name . '<small class="small d-block">No. Rek: ' . $row->customer->number . '</small>';
+                    if ($row->customer) {
+                        return $row->customer->name . '<small class="small d-block">No. Rek: ' . $row->customer->number . '</small>';
+                    }
+
+                    return 'Nasabah Tidak Ditemukan';
                 })
                 ->editColumn('amount', function($row) {
                     return 'Rp' . number_format($row->amount, 2, ',', '.');
