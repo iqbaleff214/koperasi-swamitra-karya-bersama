@@ -188,6 +188,7 @@ class LoanController extends Controller
     public function destroy(Loan $pinjaman)
     {
         try {
+            $pinjaman->deposits()->delete();
             $pinjaman->delete();
             return back()->with('success', 'Berhasil menghapus pinjaman nasabah!');
         } catch (\Throwable $th) {

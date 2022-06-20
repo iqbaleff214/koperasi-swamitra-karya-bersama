@@ -3,6 +3,7 @@
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -35,9 +36,11 @@ Route::middleware('auth')->group(function() {
 
     Route::as('transaction.')->prefix('transaksi')->group(function() {
         Route::resource('/pinjaman', LoanController::class, ['names' => 'loan']);
+        Route::resource('/pembayaran', InstallmentController::class, ['names' => 'installment']);
         Route::resource('/simpanan', DepositController::class, ['names' => 'deposit']);
 
         Route::post('/pinjaman/cetak', [LoanController::class, 'print'])->name('loan.print');
+        Route::post('/pembayaran/cetak', [InstallmentController::class, 'print'])->name('installment.print');
         Route::post('/simpanan/cetak', [DepositController::class, 'print'])->name('deposit.print');
     });
 

@@ -6,7 +6,7 @@
             <div class="col">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('transaction.deposit.update', $deposit) }}" method="post">
+                        <form action="{{ route('transaction.installment.update', $deposit) }}" method="post">
                             @csrf
                             @method('PUT')
                             <div class="row">
@@ -24,7 +24,7 @@
                                         <input type="text" class="form-control" value="{{ $deposit->customer->number . ' - ' . $deposit->customer->name }}" disabled>
                                     </div>
                                     <div class="form-group">
-                                        <label>Nominal Simpan (Rp)</label>
+                                        <label>Nominal Pembayaran (Rp)</label>
                                         <input type="number" min="0" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount', $deposit->amount) }}" placeholder="Nominal Pinjaman">
                                         <span class="error invalid-feedback">{{ $errors->first('amount') }}</span>
                                     </div>
@@ -42,20 +42,16 @@
                                 <div class="col-12 col-md-6">
                                     <div class="form-group">
                                         <label>Jenis Simpanan</label>
-                                        <select class="form-control @error('type') is-invalid @enderror" name="type">
-                                            @foreach ($types as $type)
-                                            <option value="{{ $type }}" {{ old('type', $deposit->type) == $type ? 'selected': '' }}>{{ ucfirst($type) }}</option>
-                                            @endforeach
-                                        </select>
-                                        <span class="error invalid-feedback">{{ $errors->first('type') }}</span>
+                                        <input type="hidden" name="type" value="wajib">
+                                        <input type="hidden" name="loan_id" value="{{ $deposit->loan->id }}">
+                                        <input type="text" class="form-control"
+                                            value="Wajib"
+                                            placeholder="Jenis Simpanan" disabled>
                                     </div>
-                                    @if ($deposit->loan && $deposit->type == 'wajib')
                                     <div class="form-group">
                                         <label>Kode Transaksi Pinjaman</label>
-                                        <input type="hidden" name="loan_id" value="{{ $deposit->loan->id }}">
                                         <input type="text" class="form-control" value="PI-{{ sprintf("%05d", $deposit->loan->id) }} (Rp{{ number_format($deposit->loan->amount) }})" disabled>
                                     </div>
-                                    @endif
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-success">Simpan</button>

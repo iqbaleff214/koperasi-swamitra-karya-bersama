@@ -20,4 +20,9 @@ class Loan extends Model
     {
         return $this->belongsTo(Collateral::class, 'collateral_id', 'id');
     }
+
+    public function deposits()
+    {
+        return $this->hasMany(Deposit::class);
+    }
 }

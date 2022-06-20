@@ -6,7 +6,7 @@
             <div class="col">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('transaction.deposit.store') }}" method="post">
+                        <form action="{{ route('transaction.installment.store') }}" method="post">
                             @csrf
                             <div class="row">
                                 <div class="col-12 col-md-6">
@@ -30,7 +30,7 @@
                                         <span class="error invalid-feedback">{{ $errors->first('customer_id') }}</span>
                                     </div>
                                     <div class="form-group">
-                                        <label>Nominal Simpan (Rp)</label>
+                                        <label>Nominal Pembayaran (Rp)</label>
                                         <input type="number" min="0" class="form-control change-installment @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount', 0) }}" placeholder="Nominal Pinjaman">
                                         <span class="error invalid-feedback">{{ $errors->first('amount') }}</span>
                                     </div>
@@ -38,17 +38,15 @@
                                 <div class="col-12 col-md-6">
                                     <div class="form-group">
                                         <label>Jenis Simpanan</label>
-                                        <select class="form-control @error('type') is-invalid @enderror" name="type">
-                                            @foreach ($types as $type)
-                                            <option value="{{ $type }}">{{ ucfirst($type) }}</option>
-                                            @endforeach
-                                        </select>
-                                        <span class="error invalid-feedback">{{ $errors->first('type') }}</span>
+                                        <input type="text" class="form-control"
+                                            value="Wajib" disabled>
+                                        <input type="hidden" name="type" value="wajib">
                                     </div>
                                     <div class="form-group" id="customer">
                                         <label>Kode Transaksi Pinjaman</label>
-                                        <select class="form-control" name="loan_id">
+                                        <select class="form-control" name="loan_id" required>
                                         </select>
+                                        <span class="error invalid-feedback">{{ $errors->first('loan_id') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -68,22 +66,12 @@
 <script>
     $(function() {
         let customerId = $('select[name=customer_id]').val();
-        $('#customer').hide();
 
         populateLoanOption(customerId);
 
         $('select[name=customer_id]').on('change', function() {
             customerId = $(this).val();
             populateLoanOption(customerId);
-        });
-
-        $('select[name=type]').on('change', function() {
-            const type = $(this).val();
-            if (type == 'wajib') {
-                $('#customer').show();
-            } else {
-                $('#customer').hide();
-            }
         });
 
     });

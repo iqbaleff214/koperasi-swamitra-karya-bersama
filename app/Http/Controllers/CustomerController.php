@@ -157,9 +157,15 @@ class CustomerController extends Controller
     public function destroy(Customer $nasabah)
     {
         try {
+            DB::beginTransaction();
+            $nasabah->deposits()->delete();
+            $nasabah->loans()->delete();
+            $nasabah->collaterals()->delete();
             $nasabah->delete();
+            DB::commit();
             return back()->with('success', 'Berhasil menghapus nasabah!');
         } catch (\Throwable $th) {
+            DB::rollBack();
             return back()->with('error', $th->getMessage());
         }
     }

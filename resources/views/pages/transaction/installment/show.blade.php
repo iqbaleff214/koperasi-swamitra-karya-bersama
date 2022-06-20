@@ -25,7 +25,7 @@
                                         placeholder="Nasabah" disabled>
                                 </div>
                                 <div class="form-group">
-                                    <label>Nominal Simpan (Rp)</label>
+                                    <label>Nominal Pembayaran (Rp)</label>
                                     <input type="text" class="form-control-plaintext"
                                         value="Rp{{ number_format($deposit->amount, 2, ',', '.') }}" disabled>
                                 </div>
@@ -47,12 +47,10 @@
                                         value="{{ ucfirst($deposit->type) }}"
                                         placeholder="Jenis Simpanan" disabled>
                                 </div>
-                                @if ($deposit->loan && $deposit->type == 'wajib')
                                 <div class="form-group">
                                     <label>Kode Transaksi Pinjaman</label>
                                     <input type="text" class="form-control-plaintext" value="PI-{{ sprintf("%05d", $deposit->loan->id) }} (Rp{{ number_format($deposit->loan->amount) }})" disabled>
                                 </div>
-                                @endif
                             </div>
                         </div>
                     </div>

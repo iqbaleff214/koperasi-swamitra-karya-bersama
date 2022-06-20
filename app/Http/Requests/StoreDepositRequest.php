@@ -29,6 +29,7 @@ class StoreDepositRequest extends FormRequest
             'amount' => ['required', 'numeric', 'gt:0'],
             'type' => ['required'],
             'customer_id' => 'required',
+            'loan_id' => ['nullable', 'required_if:type,wajib'],
         ];
     }
 }
