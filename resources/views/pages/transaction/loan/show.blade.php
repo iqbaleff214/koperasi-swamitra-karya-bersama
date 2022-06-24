@@ -48,6 +48,16 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
+                                    <label>Terbayar (Rp)</label>
+                                    <input type="text" class="form-control-plaintext"
+                                        value="Rp{{ number_format($loan->paid, 2, ',', '.') }}" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Sisa Hutang/Pinjaman (Rp)</label>
+                                    <input type="text" class="form-control-plaintext"
+                                        value="Rp{{ number_format($loan->amount - $loan->paid, 2, ',', '.') }}" disabled>
+                                </div>
+                                <div class="form-group">
                                     <label>Barang Jaminan</label>
                                     <input type="text" class="form-control-plaintext"
                                         value="{{ old('name', $loan->collateral->name) }}" placeholder="Barang Jaminan"

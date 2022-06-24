@@ -7,13 +7,18 @@ use App\Http\Requests\UpdateDepositRequest;
 use App\Models\Customer;
 use App\Models\Deposit;
 use App\Models\User;
+use App\Traits\LoanTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
 class DepositController extends Controller
 {
+
+    use LoanTrait;
+
     public function __construct()
     {
         $this->title = 'Transaksi - Simpanan';
@@ -120,14 +125,19 @@ class DepositController extends Controller
     public function store(StoreDepositRequest $request)
     {
         try {
+            DB::beginTransaction();
             $simpanan = Deposit::where('customer_id', $request->customer_id)->latest()->first();
             $data = $request->all();
             $data['previous_balance'] = $simpanan->current_balance ?? 0;
             $data['current_balance'] = $data['previous_balance'] + $request->amount;
             Deposit::create($data);
+            if ($simpanan && $request->type == 'wajib' && $request->loan_id) {
+                $this->paidLoan($request->loan_id);
+            }
+            DB::commit();
             return redirect()->route('transaction.deposit.index')->with('success', 'Berhasil menambahkan simpanan nasabah!');
         } catch (\Throwable $th) {
-            dd($th);
+            DB::rollBack();
             return back()->with('error', $th->getMessage());
         }
     }
@@ -173,9 +183,15 @@ class DepositController extends Controller
     public function update(UpdateDepositRequest $request, Deposit $simpanan)
     {
         try {
+            DB::beginTransaction();
             $simpanan->update($request->all());
+            if ($simpanan && $request->type == 'wajib' && $request->loan_id) {
+                $this->paidLoan($request->loan_id);
+            }
+            DB::commit();
             return back()->with('success', 'Berhasil mengedit simpanan nasabah!');
         } catch (\Throwable $th) {
+            DB::rollBack();
             return back()->with('error', $th->getMessage());
         }
     }
@@ -189,9 +205,17 @@ class DepositController extends Controller
     public function destroy(Deposit $simpanan)
     {
         try {
+            DB::beginTransaction();
+            $type = $simpanan->type;
+            $id = $simpanan->loan_id;
             $simpanan->delete();
+            if ($type == 'wajib' && $id) {
+                $this->paidLoan($id);
+            }
+            DB::commit();
             return back()->with('success', 'Berhasil menghapus simpanan nasabah!');
         } catch (\Throwable $th) {
+            DB::rollBack();
             return back()->with('error', $th->getMessage());
         }
     }
@@ -200,7 +224,11 @@ class DepositController extends Controller
     {
         $customer = Customer::find($request->customer_id);
 
-        $data = Deposit::selectRaw("customer_id, DATE(created_at) as tanggal, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) as pokok, SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) as sukarela, SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END) as wajib, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) + SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) + SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END) AS saldo")->where('customer_id', $request->customer_id)->groupByRaw('customer_id, DATE(created_at)')->orderByRaw('DATE(created_at) ASC')->get();
+        $data = Deposit::selectRaw("customer_id, DATE(created_at) as tanggal, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) as pokok, SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) as sukarela, SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END) as wajib, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) + SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) + SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END) AS saldo")
+            ->where('customer_id', $request->customer_id)
+            ->groupByRaw('customer_id, DATE(created_at)')
+            ->orderByRaw('DATE(created_at) ASC')
+            ->get();
         $manager = User::where('role', 'manager')->first();
         $filename = Carbon::now()->isoFormat('DD-MM-Y') . '_-_laporan_simpanan_nasabah_no_rekening_' . $customer->number  . '_' . time() . '.pdf';
 

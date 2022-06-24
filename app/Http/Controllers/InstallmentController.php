@@ -7,13 +7,17 @@ use App\Http\Requests\UpdateDepositRequest;
 use App\Models\Customer;
 use App\Models\Deposit;
 use App\Models\User;
+use App\Traits\LoanTrait;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
 class InstallmentController extends Controller
 {
+    use LoanTrait;
+
     public function __construct()
     {
         $this->title = 'Transaksi - Pembayaran Pinjaman';
@@ -63,7 +67,7 @@ class InstallmentController extends Controller
                 })
                 ->addColumn('balance', function($row) {
                     if ($row->loan) {
-                        return 'Rp' . number_format($row->loan->amount, 2, ',', '.');
+                        return 'Rp' . number_format($row->loan->amount, 2, ',', '.') . '<small class="small d-block">Kode Transaksi: PI-' . sprintf('%05d', $row->loan_id) . '</small>';
                     }
 
                     return 'Rp0';
@@ -87,7 +91,7 @@ class InstallmentController extends Controller
                 ->editColumn('current_balance', function($row) {
                     return 'Rp' . number_format($row->current_balance, 2, ',', '.');
                 })
-                ->rawColumns(['action', 'customer'])
+                ->rawColumns(['action', 'customer', 'balance'])
                 ->make(true);
         }
         return view('pages.transaction.installment.index', [
@@ -118,14 +122,20 @@ class InstallmentController extends Controller
     public function store(StoreDepositRequest $request)
     {
         try {
+            DB::beginTransaction();
             $pembayaran = Deposit::where('customer_id', $request->customer_id)->latest()->first();
             $data = $request->all();
             $data['previous_balance'] = $pembayaran->current_balance ?? 0;
             $data['current_balance'] = $data['previous_balance'] + $request->amount;
             Deposit::create($data);
+            if ($pembayaran && $request->type == 'wajib' && $request->loan_id) {
+                $this->paidLoan($request->loan_id);
+            }
+            DB::commit();
             return redirect()->route('transaction.installment.index')->with('success', 'Berhasil menambahkan pembayaran simpanan nasabah!');
         } catch (\Throwable $th) {
             dd($th);
+            DB::rollBack();
             return back()->with('error', $th->getMessage());
         }
     }
@@ -170,9 +180,15 @@ class InstallmentController extends Controller
     public function update(UpdateDepositRequest $request, Deposit $pembayaran)
     {
         try {
+            DB::beginTransaction();
             $pembayaran->update($request->all());
+            if ($pembayaran && $request->type == 'wajib' && $pembayaran->loan_id) {
+                $this->paidLoan($pembayaran->loan_id);
+            }
+            DB::commit();
             return back()->with('success', 'Berhasil mengedit pembayaran simpanan nasabah!');
         } catch (\Throwable $th) {
+            DB::rollBack();
             return back()->with('error', $th->getMessage());
         }
     }
@@ -186,25 +202,50 @@ class InstallmentController extends Controller
     public function destroy(Deposit $pembayaran)
     {
         try {
+            DB::beginTransaction();
+            $type = $pembayaran->type;
+            $id = $pembayaran->loan_id;
             $pembayaran->delete();
+            if ($type == 'wajib' && $id) {
+                $this->paidLoan($id);
+            }
+            DB::commit();
             return back()->with('success', 'Berhasil menghapus pembayaran simpanan nasabah!');
         } catch (\Throwable $th) {
+            DB::rollBack();
             return back()->with('error', $th->getMessage());
         }
     }
 
     public function print(Request $request)
     {
-        $customer = Customer::find($request->customer_id);
+        $filter = $request->validate([
+            'time_from' => 'required',
+            'time_to' => 'required',
+        ]);
 
-        $data = Deposit::selectRaw("customer_id, DATE(created_at) as tanggal, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) as pokok, SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) as sukarela, SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END) as wajib, SUM(CASE WHEN type='pokok' THEN amount ELSE 0 END) + SUM(CASE WHEN type='sukarela' THEN amount ELSE 0 END) + SUM(CASE WHEN type='wajib' THEN amount ELSE 0 END) AS saldo")->where('customer_id', $request->customer_id)->groupByRaw('customer_id, DATE(created_at)')->orderByRaw('DATE(created_at) ASC')->get();
+        $time_from = Carbon::parse($filter['time_from']);
+        $time_to = Carbon::parse($filter['time_to']);
+
+        // SELECT DATE(MAX(deposits.created_at)) as tanggal, SUM(deposits.amount) AS bayar, loans.amount AS hutang, customers.name FROM deposits JOIN customers ON customers.id = deposits.customer_id JOIN loans ON loans.id = deposits.loan_id WHERE deposits.type='wajib' AND deposits.loan_id IS NOT NULL GROUP BY deposits.loan_id, deposits.customer_id;
+
+        $data = Deposit::selectRaw("DATE(MAX(deposits.created_at)) as tanggal, SUM(deposits.amount) AS bayar, loans.amount AS hutang, customers.name, customers.number")
+            ->join('loans', 'loans.id', '=', 'deposits.loan_id')
+            ->join('customers', 'customers.id', '=', 'deposits.customer_id')
+            ->where('type', 'wajib')
+            ->groupByRaw('deposits.loan_id, deposits.customer_id')
+            ->havingRaw('MONTH(MAX(deposits.created_at)) >= ? AND MONTH(MAX(deposits.created_at)) <= ? AND YEAR(MAX(deposits.created_at)) >= ? AND YEAR(MAX(deposits.created_at)) <= ?', [$time_from->month, $time_to->month, $time_from->year, $time_to->year])
+            ->orderByRaw('DATE(MAX(deposits.created_at)) ASC')
+            ->get();
+
+        // dd($data);
         $manager = User::where('role', 'manager')->first();
-        $filename = Carbon::now()->isoFormat('DD-MM-Y') . '_-_laporan_pembayaran_pinjaman_no_rekening_' . $customer->number  . '_' . time() . '.pdf';
+        $filename = Carbon::now()->isoFormat('DD-MM-Y') . '_-_laporan_pembayaran_pinjaman_periode_' . $filter['time_from'] . '_-_' . $filter['time_to']  . '_' . time() . '.pdf';
 
         $pdf = PDF::loadView('pages.transaction.installment.print', [
             'title' => 'Laporan Pembayaran Pinjaman',
             'user' => auth()->user(),
-            'customer' => $customer,
+            'filter' => $time_from->isoFormat('MMMM Y') . " - " . $time_to->isoFormat('MMMM Y'),
             'date' => Carbon::now()->isoFormat('dddd, D MMMM Y'),
             'manager' => $manager,
             'data' => $data,
@@ -212,6 +253,6 @@ class InstallmentController extends Controller
         ]);
         $pdf->setPaper('A4', 'landscape');
 
-        return $pdf->download($filename);
+        return $pdf->stream($filename);
     }
 }

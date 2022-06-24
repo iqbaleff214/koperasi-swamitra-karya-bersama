@@ -51,6 +51,16 @@
                                     <label>Kode Transaksi Pinjaman</label>
                                     <input type="text" class="form-control-plaintext" value="PI-{{ sprintf("%05d", $deposit->loan->id) }} (Rp{{ number_format($deposit->loan->amount) }})" disabled>
                                 </div>
+                                <div class="form-group">
+                                    <label>Total Terbayar (Rp)</label>
+                                    <input type="text" class="form-control-plaintext"
+                                        value="Rp{{ number_format($deposit->loan->paid, 2, ',', '.') }}" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Sisa Hutang/Pinjaman (Rp)</label>
+                                    <input type="text" class="form-control-plaintext"
+                                        value="Rp{{ number_format($deposit->loan->amount - $deposit->loan->paid, 2, ',', '.') }}" disabled>
+                                </div>
                             </div>
                         </div>
                     </div>

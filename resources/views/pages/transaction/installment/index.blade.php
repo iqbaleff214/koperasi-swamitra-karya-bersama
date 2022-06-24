@@ -66,14 +66,16 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col">
+                            <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label>Nasabah</label>
-                                    <select class="form-control" name="customer_id">
-                                        @foreach ($customers as $customer)
-                                        <option value="{{ $customer->id }}">{{ $customer->number . ' - ' . $customer->name . ' - ' . $customer->nik }}</option>
-                                        @endforeach
-                                    </select>
+                                    <label>Sejak</label>
+                                    <input required type="month" class="form-control" name="time_from" placeholder="Sejak">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label>Hingga</label>
+                                    <input required type="month" class="form-control" name="time_to" placeholder="Sejak">
                                 </div>
                             </div>
                         </div>

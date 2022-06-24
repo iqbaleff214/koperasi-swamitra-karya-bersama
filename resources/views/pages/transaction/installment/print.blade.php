@@ -9,26 +9,8 @@
         <td style="width: 20%; text-align: right">{{ $date }}</td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td class="font-weight-bold">NIK:</td>
-        <td>{{ $customer->nik }}</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td class="font-weight-bold">No Rek:</td>
-        <td>{{ $customer->number }}</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td class="font-weight-bold">Nama:</td>
-        <td>{{ $customer->name }}</td>
+        <td class="font-weight-bold">Filter:</td>
+        <td>{{ $filter }}</td>
         <td></td>
         <td></td>
     </tr>
@@ -40,29 +22,26 @@
     <thead>
         <tr>
             <th scope="col">No</th>
-            <th scope="col">Tgl Simpan</th>
-            <th scope="col">Simpanan Wajib</th>
-            <th scope="col">Simpanan Sukarela</th>
-            <th scope="col">Simpanan Pokok</th>
-            <th scope="col">Total</th>
+            <th scope="col">Tgl Pembayaran</th>
+            <th scope="col">No Rek</th>
+            <th scope="col">Nama Nasabah</th>
+            <th scope="col">Total Pinjaman</th>
+            <th scope="col">Sudah Dibayar</th>
+            <th scope="col">Sisa</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($data as $item)
-            @php($total += $item->saldo)
             <tr>
                 <th scope="row">{{ $loop->iteration }}</th>
-                <td>{{ \Carbon\Carbon::parse($item->tanggal)->isoFormat('DD-MM-Y') }}</td>
-                <td class="text-right">Rp{{ number_format($item->wajib, 2, ',', '.') }}</td>
-                <td class="text-right">Rp{{ number_format($item->sukarela, 2, ',', '.') }}</td>
-                <td class="text-right">Rp{{ number_format($item->pokok, 2, ',', '.') }}</td>
-                <td class="text-right">Rp{{ number_format($item->saldo, 2, ',', '.') }}</td>
+                <td>{{ $item->tanggal }}</td>
+                <td>{{ $item->number }}</td>
+                <td>{{ $item->name }}</td>
+                <td class="text-right">Rp{{ number_format($item->hutang, 2, ',', '.') }}</td>
+                <td class="text-right">Rp{{ number_format($item->bayar, 2, ',', '.') }}</td>
+                <td class="text-right">Rp{{ number_format($item->hutang - $item->bayar, 2, ',', '.') }}</td>
             </tr>
         @endforeach
-        <tr>
-            <th colspan="5">Total</th>
-            <td class="text-right">Rp{{ number_format($total, 2, ',', '.') }}</td>
-        </tr>
     </tbody>
 </table>
 @endsection
