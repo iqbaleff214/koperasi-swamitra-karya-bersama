@@ -114,7 +114,7 @@ class WithdrawalController extends Controller
     {
         try {
             DB::beginTransaction();
-            $simpanan = Deposit::where('customer_id', $request->customer_id)->latest()->first();
+            $simpanan = Deposit::where('customer_id', $request->customer_id)->whereIn('type', ['sukarela', 'penarikan'])->latest()->first();
             $data = $request->all();
             $data['previous_balance'] = $simpanan->current_balance ?? 0;
             $data['current_balance'] = $data['previous_balance'] - $request->amount;

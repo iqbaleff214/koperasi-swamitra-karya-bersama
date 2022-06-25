@@ -123,7 +123,7 @@ class InstallmentController extends Controller
     {
         try {
             DB::beginTransaction();
-            $pembayaran = Deposit::where('customer_id', $request->customer_id)->latest()->first();
+            $pembayaran = Deposit::where('customer_id', $request->customer_id)->where('type', 'wajib')->latest()->first();
             $data = $request->all();
             $data['previous_balance'] = $pembayaran->current_balance ?? 0;
             $data['current_balance'] = $data['previous_balance'] + $request->amount;
