@@ -84,6 +84,9 @@ class ForeclosureController extends Controller
 
                     return 'Nasabah Tidak Ditemukan';
                 })
+                ->addColumn('total_amount', function($row) {
+                    return 'Rp' . number_format($row->collateral->value - $row->remaining_amount, 2, ',', '.');
+                })
                 ->editColumn('return_amount', function($row) {
                     return 'Rp' . number_format($row->return_amount, 2, ',', '.');
                 })

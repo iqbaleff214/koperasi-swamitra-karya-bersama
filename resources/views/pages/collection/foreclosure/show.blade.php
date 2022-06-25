@@ -48,6 +48,11 @@
                                     <input type="text" class="form-control-plaintext"
                                         value="Rp{{ number_format($foreclosure->return_amount, 2, ',', '.') }}" disabled>
                                 </div>
+                                <div class="form-group">
+                                    <label>Total (Rp)</label>
+                                    <input type="text" class="form-control-plaintext"
+                                        value="Rp{{ number_format($foreclosure->collateral->value - $foreclosure->remaining_amount, 2, ',', '.') }}" disabled>
+                                </div>
                             </div>
                         </div>
                     </div>

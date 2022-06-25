@@ -30,7 +30,7 @@
                                     <th>Jaminan</th>
                                     <th>Pinjaman</th>
                                     <th>Sisa</th>
-                                    <th>Pengembalian</th>
+                                    <th>Total</th>
                                     <th style="width: 150px;">Aksi</th>
                                 </tr>
                             </thead>
@@ -151,8 +151,8 @@
                         name: 'remaining_amount'
                     },
                     {
-                        data: 'return_amount',
-                        name: 'return_amount'
+                        data: 'total_amount',
+                        name: 'total_amount'
                     },
                     {
                         data: 'action',

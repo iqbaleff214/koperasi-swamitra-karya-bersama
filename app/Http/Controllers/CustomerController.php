@@ -185,7 +185,7 @@ class CustomerController extends Controller
         $time_from = date('d-m-Y', strtotime($filter['time_from']));
         $time_to = date('d-m-Y', strtotime($filter['time_to']));
 
-        $data = Customer::whereBetween('joined_at', $filter)->get();
+        $data = Customer::whereBetween('joined_at', $filter)->orderBy('joined_at')->get();
         $manager = User::where('role', 'manager')->first();
         $filename = Carbon::now()->isoFormat('DD-MM-Y') . '_-_laporan_data_nasabah_periode_' . $time_from . '_-_' . $time_to  . '_' . time() . '.pdf';
 
