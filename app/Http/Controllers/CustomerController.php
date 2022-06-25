@@ -205,9 +205,10 @@ class CustomerController extends Controller
     public function loan($id)
     {
         try {
+            $data = Loan::where('customer_id', $id)->get();
             return response()->json([
                 'status' => 'success',
-                'data' => Loan::where('customer_id', $id)->get(),
+                'data' => $data,
             ]);
         } catch (\Throwable $th) {
             return response()->json([

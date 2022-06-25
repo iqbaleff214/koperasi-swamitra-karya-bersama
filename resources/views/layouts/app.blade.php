@@ -150,8 +150,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
+                        <li class="nav-item {{ Route::is('collection.*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Route::is('collection.*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-book"></i>
                                 <p>
                                     Kolektor
@@ -160,7 +160,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="{{ route('collection.visit.index') }}" class="nav-link {{ Route::is('collection.visit.*') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Nasabah Bermasalah</p>
                                     </a>

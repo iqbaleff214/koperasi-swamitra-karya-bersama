@@ -201,7 +201,6 @@ class WithdrawalController extends Controller
         $time_to = date('d-m-Y', strtotime($filter['time_to']));
 
         $data = Deposit::with('customer')->where('type', 'penarikan')->whereBetween('created_at', $filter)->get();
-        // dd($data);
         $manager = User::where('role', 'manager')->first();
         $filename = Carbon::now()->isoFormat('DD-MM-Y') . '_-_laporan_penarikan_nasabah_periode_' . $time_from . '_-_' . $time_to  . '_' . time() . '.pdf';
         $pdf = PDF::loadView('pages.transaction.withdrawal.print', [

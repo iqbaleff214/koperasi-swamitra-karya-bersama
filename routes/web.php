@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VisitController;
 use App\Http\Controllers\WithdrawalController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,12 @@ Route::middleware('auth')->group(function() {
         Route::post('/pembayaran/cetak', [InstallmentController::class, 'print'])->name('installment.print');
         Route::post('/simpanan/cetak', [DepositController::class, 'print'])->name('deposit.print');
         Route::post('/penarikan/cetak', [WithdrawalController::class, 'print'])->name('withdrawal.print');
+    });
+
+    Route::as('collection.')->prefix('kolektor')->group(function() {
+        Route::resource('/nasabah-bermasalah', VisitController::class, ['names' => 'visit']);
+
+        Route::post('/nasabah-bermasalah/cetak', [VisitController::class, 'print'])->name('visit.print');
     });
 
     Route::get('/pengaturan', [HomeController::class, 'profile'])->name('profile.show');
