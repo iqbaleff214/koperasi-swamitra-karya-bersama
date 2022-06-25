@@ -120,7 +120,7 @@ class VisitController extends Controller
     {
         try {
             DB::beginTransaction();
-            Customer::find($request->customer)->update(['status' => 'blacklist']);
+            Customer::find($request->customer_id)->update(['status' => 'blacklist']);
             Visit::create($request->all());
             DB::commit();
             return redirect()->route('collection.visit.index')->with('success', 'Berhasil menambahkan nasabah bermasalah!');
