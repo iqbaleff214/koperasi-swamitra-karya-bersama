@@ -78,10 +78,10 @@
         });
 
         $('select[name=type]').on('change', function() {
+            setInstallment();
             const type = $(this).val();
             if (type == 'wajib') {
                 $('#customer').show();
-                setInstallment();
             } else {
                 $('#customer').hide();
             }
@@ -114,7 +114,7 @@
     }
 
     function setInstallment() {
-        $('input[name=amount]').val($('select[name=loan_id] > option:selected').data('installment'));
+        if ($('select[name=type]').val() == 'wajib') $('input[name=amount]').val($('select[name=loan_id] > option:selected').data('installment'));
     }
 </script>
 @endpush
