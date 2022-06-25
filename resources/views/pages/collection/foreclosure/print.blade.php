@@ -37,7 +37,7 @@
                 <th scope="row">{{ $loop->iteration }}</th>
                 <td>{{ $item->customer->number }}</td>
                 <td>{{ $item->customer->name }}</td>
-                <td>{{ $item->collateral->description ?? $item->collateral->name }}</td>
+                <td>{{ $item->collateral->name ?? $item->collateral->description }}</td>
                 <td>{{ \Carbon\Carbon::parse($item->date)->isoFormat('DD-MM-Y') }}</td>
                 <td class="text-right">Rp{{ number_format($item->collateral->value, 2, ',', '.') }}</td>
                 <td class="text-right">Rp{{ number_format($item->remaining_amount, 2, ',', '.') }}</td>
