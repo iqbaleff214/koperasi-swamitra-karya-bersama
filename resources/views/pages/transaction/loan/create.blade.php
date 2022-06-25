@@ -17,7 +17,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Tanggal</label>
-                                        <input type="date" max="{{ date('Y-m-d') }}" class="form-control @error('created_at') is-invalid @enderror" name="created_at" value="{{ old('created_at',date('Y-m-d')) }}" placeholder="Tanggal Daftar">
+                                        <input type="date" class="form-control @error('created_at') is-invalid @enderror" name="created_at" value="{{ old('created_at',date('Y-m-d')) }}" placeholder="Tanggal Daftar">
                                         <span class="error invalid-feedback">{{ $errors->first('created_at') }}</span>
                                     </div>
                                     <div class="form-group">
