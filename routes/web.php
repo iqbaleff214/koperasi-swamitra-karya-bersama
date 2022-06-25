@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DepositController;
+use App\Http\Controllers\ForeclosureController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\LoanController;
@@ -50,8 +51,10 @@ Route::middleware('auth')->group(function() {
 
     Route::as('collection.')->prefix('kolektor')->group(function() {
         Route::resource('/nasabah-bermasalah', VisitController::class, ['names' => 'visit']);
+        Route::resource('/penarikan-jaminan', ForeclosureController::class, ['names' => 'foreclosure']);
 
         Route::post('/nasabah-bermasalah/cetak', [VisitController::class, 'print'])->name('visit.print');
+        Route::post('/penarikan-jaminan/cetak', [ForeclosureController::class, 'print'])->name('foreclosure.print');
     });
 
     Route::get('/pengaturan', [HomeController::class, 'profile'])->name('profile.show');
