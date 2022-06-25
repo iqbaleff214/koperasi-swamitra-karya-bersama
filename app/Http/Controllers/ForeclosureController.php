@@ -79,7 +79,7 @@ class ForeclosureController extends Controller
                 })
                 ->addColumn('collateral', function($row) {
                     if ($row->collateral) {
-                        return $row->collateral->name . '<small class="small d-block">Rp' . number_format($row->collateral->value, 2, ',', '.') . '</small>';
+                        return ($row->collateral->name ?? $row->collateral->description) . '<small class="small d-block">Rp' . number_format($row->collateral->value, 2, ',', '.') . '</small>';
                     }
 
                     return 'Nasabah Tidak Ditemukan';
