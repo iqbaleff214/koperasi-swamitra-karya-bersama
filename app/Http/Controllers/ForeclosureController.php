@@ -212,7 +212,7 @@ class ForeclosureController extends Controller
         $time_from = date('d-m-Y', strtotime($filter['time_from']));
         $time_to = date('d-m-Y', strtotime($filter['time_to']));
 
-        $data = Foreclosure::with(['customer', 'collateral'])->whereBetween('created_at', $filter)->get();
+        $data = Foreclosure::with(['customer', 'collateral'])->whereBetween('date', $filter)->get();
         $manager = User::where('role', 'manager')->first();
         $filename = Carbon::now()->isoFormat('DD-MM-Y') . '_-_laporan_penarikan_jaminan_nasabah_bermasalah_periode_' . $time_from . '_-_' . $time_to  . '_' . time() . '.pdf';
         $pdf = PDF::loadView('pages.collection.foreclosure.print', [
