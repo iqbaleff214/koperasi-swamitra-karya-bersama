@@ -24,7 +24,7 @@
             <th scope="col">No</th>
             <th scope="col">No Rek</th>
             <th scope="col">Nama Nasabah</th>
-            <th scope="col">Jaminan</th>
+            <th scope="col">Nama Jaminan</th>
             <th scope="col">Tgl Penarikan</th>
             <th scope="col">Nominal</th>
             <th scope="col">Sisa Belum Dibayar</th>
