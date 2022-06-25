@@ -221,7 +221,10 @@ class CustomerController extends Controller
     public function currentBalanceByDeposit($id)
     {
         try {
+            $savings = Deposit::where('customer_id', $id)->where('type', 'sukarela')->sum('amount');
+            $withdrawal = Deposit::where('customer_id', $id)->where('type', 'penarikan')->sum('amount');
             $data = Deposit::where('customer_id', $id)->latest()->first();
+            $data->current_balance = $savings - $withdrawal;
             $data->current_balance_formatted = 'Rp' . number_format($data->current_balance, '2', ',', '.');
             return response()->json([
                 'status' => 'success',
