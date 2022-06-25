@@ -102,7 +102,7 @@ class LoanController extends Controller
     {
         return view('pages.transaction.loan.create', [
             'title' => $this->buildTitle('baru'),
-            'customers' => Customer::where('status', 'active')->get(),
+            'customers' => Customer::all(),
         ]);
     }
 

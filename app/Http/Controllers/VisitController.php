@@ -105,7 +105,7 @@ class VisitController extends Controller
     {
         return view('pages.collection.visit.create', [
             'title' => $this->buildTitle('baru'),
-            'customers' => Customer::where('status', 'active')->get(),
+            'customers' => Customer::all(),
             'users' => User::where('role', 'collector')->get()
         ]);
     }
@@ -120,7 +120,7 @@ class VisitController extends Controller
     {
         try {
             DB::beginTransaction();
-            Customer::find($request->customer_id)->update(['status' => 'blacklist']);
+            // Customer::find($request->customer_id)->update(['status' => 'blacklist']);
             Visit::create($request->all());
             DB::commit();
             return redirect()->route('collection.visit.index')->with('success', 'Berhasil menambahkan nasabah bermasalah!');

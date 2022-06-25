@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 class ForeclosureController extends Controller
 {
@@ -109,7 +110,7 @@ class ForeclosureController extends Controller
     {
         return view('pages.collection.foreclosure.create', [
             'title' => $this->buildTitle('baru'),
-            'customers' => Customer::where('status', 'active')->get(),
+            'customers' => Customer::all(),
         ]);
     }
 
@@ -122,9 +123,13 @@ class ForeclosureController extends Controller
     public function store(StoreForeclosureRequest $request)
     {
         try {
+            DB::beginTransaction();
+            Customer::find($request->customer_id)->update(['status' => 'blacklist']);
             Foreclosure::create($request->only(['date', 'collateral_amount', 'remaining_amount', 'return_amount', 'customer_id', 'loan_id', 'collateral_id']));
+            DB::commit();
             return redirect()->route('collection.foreclosure.index')->with('success', 'Berhasil menarik jaminan pinjaman nasabah!');
         } catch (\Throwable $th) {
+            DB::rollBack();
             return back()->with('error', $th->getMessage());
         }
     }

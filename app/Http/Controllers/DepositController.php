@@ -97,7 +97,7 @@ class DepositController extends Controller
         }
         return view('pages.transaction.deposit.index', [
             'title' => $this->title,
-            'customers' => Customer::where('status', 'active')->get(),
+            'customers' => Customer::all(),
             'types' => ['sukarela', 'wajib', 'pokok']
         ]);
     }
@@ -111,7 +111,7 @@ class DepositController extends Controller
     {
         return view('pages.transaction.deposit.create', [
             'title' => $this->buildTitle('baru'),
-            'customers' => Customer::where('status', 'active')->get(),
+            'customers' => Customer::all(),
             'types' => ['sukarela', 'wajib']
         ]);
     }

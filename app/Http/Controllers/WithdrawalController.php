@@ -87,7 +87,7 @@ class WithdrawalController extends Controller
         }
         return view('pages.transaction.withdrawal.index', [
             'title' => $this->title,
-            'customers' => Customer::where('status', 'active')->get(),
+            'customers' => Customer::all(),
         ]);
     }
 
@@ -100,7 +100,7 @@ class WithdrawalController extends Controller
     {
         return view('pages.transaction.withdrawal.create', [
             'title' => $this->buildTitle('baru'),
-            'customers' => Customer::where('status', 'active')->get(),
+            'customers' => Customer::all(),
         ]);
     }
 
