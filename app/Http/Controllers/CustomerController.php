@@ -216,4 +216,22 @@ class CustomerController extends Controller
             ]);
         }
     }
+
+    public function currentBalanceByDeposit($id)
+    {
+        try {
+            $data = Deposit::where('customer_id', $id)->latest()->first();
+            $data->current_balance_formatted = 'Rp' . number_format($data->current_balance, '2', ',', '.');
+            return response()->json([
+                'status' => 'success',
+                'data' => $data,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'code' => $th->getCode(),
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
 }

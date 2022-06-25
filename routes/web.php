@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WithdrawalController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,10 +39,12 @@ Route::middleware('auth')->group(function() {
         Route::resource('/pinjaman', LoanController::class, ['names' => 'loan']);
         Route::resource('/pembayaran', InstallmentController::class, ['names' => 'installment']);
         Route::resource('/simpanan', DepositController::class, ['names' => 'deposit']);
+        Route::resource('/penarikan', WithdrawalController::class, ['names' => 'withdrawal']);
 
         Route::post('/pinjaman/cetak', [LoanController::class, 'print'])->name('loan.print');
         Route::post('/pembayaran/cetak', [InstallmentController::class, 'print'])->name('installment.print');
         Route::post('/simpanan/cetak', [DepositController::class, 'print'])->name('deposit.print');
+        Route::post('/penarikan/cetak', [WithdrawalController::class, 'print'])->name('withdrawal.print');
     });
 
     Route::get('/pengaturan', [HomeController::class, 'profile'])->name('profile.show');
