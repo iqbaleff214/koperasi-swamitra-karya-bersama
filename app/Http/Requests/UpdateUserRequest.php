@@ -33,6 +33,7 @@ class UpdateUserRequest extends FormRequest
             'last_education' => 'nullable',
             'address' => 'required',
             'phone' => ['required', Rule::unique('users', 'phone')->ignore($this->id)],
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 }

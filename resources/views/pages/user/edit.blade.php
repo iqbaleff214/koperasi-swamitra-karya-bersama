@@ -6,7 +6,7 @@
             <div class="col">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('user.update', $user) }}" method="post">
+                        <form action="{{ route('user.update', $user) }}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <input type="hidden" name="id" value="{{ $user->id }}">
@@ -60,7 +60,23 @@
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-4">
-                                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsum, at?</p>
+                                    <div class="form-group">
+                                        <label>Foto</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input @error('photo') is-invalid @enderror" accept="image/*" name="photo" id="image">
+                                                <label class="custom-file-label" for="image">Pilih Gambar</label>
+                                            </div>
+                                        </div>
+                                        @error('photo')
+                                        <span class="text-danger text-sm">{{ $errors->first('photo') }}</span>
+                                        @enderror
+                                        <div class="form-text font-weight-lighter text-sm">
+                                            Maksimal: 2048KB
+                                        </div>
+                                    </div>
+                                    <img src="<?= asset($user->photo ? 'storage/' . $user->photo : 'swamitra.jpeg') ?>" class="img-thumbnail img-preview"
+                                         style="width: 100%;" alt="Foto">
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-success">Simpan</button>
@@ -74,3 +90,25 @@
     </div><!-- /.container-fluid -->
     <!-- /.content -->
 @endsection
+
+@push('script')
+    <script>
+        $(function () {
+            $('#image').on('change', function () {
+                previewImage();
+            });
+        });
+
+        function previewImage() {
+            const cover = document.querySelector('.custom-file-input');
+            const coverLabel = document.querySelector('.custom-file-label');
+            const imgPreview = document.querySelector('.img-preview');
+            coverLabel.textContent = cover.files[0].name;
+            const coverFile = new FileReader();
+            coverFile.readAsDataURL(cover.files[0]);
+            coverFile.onload = function (e) {
+                imgPreview.src = e.target.result;
+            }
+        }
+    </script>
+@endpush

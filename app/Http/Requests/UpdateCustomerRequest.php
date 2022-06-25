@@ -35,6 +35,7 @@ class UpdateCustomerRequest extends FormRequest
             'last_education' => 'required',
             'profession' => 'required',
             'status' => 'required',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 }

@@ -35,6 +35,7 @@ class StoreUserRequest extends FormRequest
             'joined_at' => 'required',
             'address' => 'required',
             'phone' => ['required', Rule::unique('users', 'phone')],
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 }

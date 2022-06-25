@@ -45,7 +45,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div class="media">
                                 <div class="image mr-3">
                                     <div class="img-circle"
-                                        style="width: 50px; height: 50px; background-repeat: no-repeat;background-size: 50px; background-position: center; background-image: url('https://ui-avatars.com/api/?background=random&name={{ urlencode(Auth::user()->name) }}') ;">
+                                        style="width: 50px; height: 50px; background-repeat: no-repeat;background-size: 50px; background-position: center; background-image: url({{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : 'https://ui-avatars.com/api/?background=random&name=' . urlencode(Auth::user()->name) }}) ;">
                                     </div>
                                 </div>
                                 <div class="media-body">

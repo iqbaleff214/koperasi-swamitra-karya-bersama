@@ -59,7 +59,9 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-4">
-                                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsum, at?</p>
+                                <label>Foto</label>
+                                <img src="<?= asset($user->photo ? 'storage/' . $user->photo : 'swamitra.jpeg') ?>" class="img-thumbnail img-preview"
+                                     style="width: 100%;" alt="Foto">
                             </div>
                         </div>
                     </div>

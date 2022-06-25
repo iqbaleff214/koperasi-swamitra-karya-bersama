@@ -32,7 +32,10 @@ class HomeController extends Controller
     public function update(UpdateProfileRequest $request)
     {
         try {
-            Auth::user()->update($request->all());
+            $user = Auth::user();
+            $data = $request->except('photo');
+            $data['photo'] = $this->updateImage($request, $user->photo);
+            $user->update($data);
             return back()->with('success', 'Berhasil mengupdate profil!');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());

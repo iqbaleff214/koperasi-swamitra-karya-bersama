@@ -9,6 +9,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 
 class UserController extends Controller
@@ -78,9 +79,9 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         try {
-            $data = $request->all();
+            $data = $request->except('photo');
             $data['password'] = Hash::make($data['password']);
-
+            $data['photo'] = $this->storeImage($request);
             User::create($data);
             return redirect()->route('user.index')->with('success', 'Berhasil menambahkan karyawan!');
         } catch (\Throwable $th) {
@@ -126,7 +127,9 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $karyawan)
     {
         try {
-            $karyawan->update($request->all());
+            $data = $request->except('photo');
+            $data['photo'] = $this->updateImage($request, $karyawan->photo);
+            $karyawan->update($data);
             return back()->with('success', 'Berhasil mengedit karyawan!');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
@@ -142,6 +145,7 @@ class UserController extends Controller
     public function destroy(User $karyawan)
     {
         try {
+            $this->deleteImage($karyawan->photo);
             $karyawan->delete();
             return back()->with('success', 'Berhasil menghapus karyawan!');
         } catch (\Throwable $th) {

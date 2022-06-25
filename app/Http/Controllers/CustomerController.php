@@ -81,6 +81,7 @@ class CustomerController extends Controller
             DB::beginTransaction();
 
             $data = $request->except('amount');
+            $data['photo'] = $this->storeImage($request);
             $customer = Customer::create($data);
             Deposit::create([
                 'amount' => $request->get('amount'),
@@ -141,7 +142,9 @@ class CustomerController extends Controller
     public function update(UpdateCustomerRequest $request, Customer $nasabah)
     {
         try {
-            $nasabah->update($request->all());
+            $data = $request->except('photo');
+            $data['photo'] = $this->updateImage($request, $nasabah->photo);
+            $nasabah->update($data);
             return back()->with('success', 'Berhasil mengedit nasabah!');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
@@ -158,6 +161,7 @@ class CustomerController extends Controller
     {
         try {
             DB::beginTransaction();
+            $this->deleteImage($nasabah->photo);
             $nasabah->deposits()->delete();
             $nasabah->loans()->delete();
             $nasabah->collaterals()->delete();
