@@ -17,7 +17,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Tanggal</label>
-                                        <input type="date" readonly max="{{ date('Y-m-d') }}" class="form-control @error('created_at') is-invalid @enderror" value="{{ old('created_at',date('Y-m-d')) }}" placeholder="Tanggal">
+                                        <input type="date" max="{{ date('Y-m-d') }}" class="form-control @error('created_at') is-invalid @enderror" value="{{ old('created_at',date('Y-m-d')) }}" placeholder="Tanggal">
                                         <span class="error invalid-feedback">{{ $errors->first('created_at') }}</span>
                                     </div>
                                     <div class="form-group">
@@ -81,11 +81,16 @@
             const type = $(this).val();
             if (type == 'wajib') {
                 $('#customer').show();
+                setInstallment();
             } else {
                 $('#customer').hide();
             }
         });
 
+
+        $('select[name=loan_id]').on('change', function() {
+            setInstallment();
+        })
     });
 
     function populateLoanOption(customerId) {
@@ -101,10 +106,15 @@
                 data.data.forEach(el => {
                     const price = currencyFormat.format(el.amount);
                     const noTrans = `PI-${el.id.toString().padStart(5, '0')}`
-                    element += `<option value="${el.id}">${noTrans} (${price})</option>`;
+                    element += `<option data-installment="${el.installment}" value="${el.id}">${noTrans} (${price})</option>`;
                 });
                 _select.html(element);
+                setInstallment();
             });
+    }
+
+    function setInstallment() {
+        $('input[name=amount]').val($('select[name=loan_id] > option:selected').data('installment'));
     }
 </script>
 @endpush
