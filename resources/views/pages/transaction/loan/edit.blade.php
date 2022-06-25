@@ -48,15 +48,18 @@
                                 <div class="col-12 col-md-6">
                                     <div class="form-group">
                                         <label>Barang Jaminan</label>
-                                        <input type="text" class="form-control" value="{{ old('name', $loan->collateral->name) }}" placeholder="Barang Jaminan" disabled>
+                                        <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', $loan->collateral->name) }}" placeholder="Barang Jaminan">
+                                        <span class="error invalid-feedback">{{ $errors->first('name') }}</span>
                                     </div>
                                     <div class="form-group">
                                         <label>Nilai Jaminan (Rp)</label>
-                                        <input type="text" class="form-control" value="Rp{{ number_format(old('value', $loan->collateral->value), 2, ',', '.') }}" placeholder="Nilai Jaminan (Rp)" disabled>
+                                        <input type="number" min="0" class="form-control @error('value') is-invalid @enderror" name="value" value="{{ old('value', $loan->collateral->value) }}" placeholder="Nilai Jaminan (Rp)">
+                                        <span class="error invalid-feedback">{{ $errors->first('value') }}</span>
                                     </div>
                                     <div class="form-group">
                                         <label>Keterangan</label>
-                                        <input type="text" class="form-control" value="{{ old('description', $loan->collateral->description) }}" placeholder="Keterangan" disabled>
+                                        <input type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ old('description', $loan->collateral->description) }}" placeholder="Keterangan">
+                                        <span class="error invalid-feedback">{{ $errors->first('description') }}</span>
                                     </div>
                                 </div>
                             </div>

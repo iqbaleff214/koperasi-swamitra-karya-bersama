@@ -172,9 +172,13 @@ class LoanController extends Controller
     public function update(UpdateLoanRequest $request, Loan $pinjaman)
     {
         try {
-            $pinjaman->update($request->all());
+            DB::beginTransaction();
+            $pinjaman->update($request->except(['name', 'value', 'description']));
+            $pinjaman->collateral()->update($request->only(['name', 'value', 'description']));
+            DB::commit();
             return back()->with('success', 'Berhasil mengedit pinjaman nasabah!');
         } catch (\Throwable $th) {
+            DB::rollBack();
             return back()->with('error', $th->getMessage());
         }
     }

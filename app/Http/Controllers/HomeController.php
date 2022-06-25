@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -37,6 +40,17 @@ class HomeController extends Controller
             $data['photo'] = $this->updateImage($request, $user->photo);
             $user->update($data);
             return back()->with('success', 'Berhasil mengupdate profil!');
+        } catch (\Throwable $th) {
+            return back()->with('error', $th->getMessage());
+        }
+    }
+
+    public function truncate()
+    {
+        try {
+            Artisan::call('migrate:fresh --seed');
+            Auth::logout();
+            return back()->with('success', 'Berhasil mereset data!');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }

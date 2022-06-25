@@ -25,4 +25,14 @@ class Customer extends Model
     {
         return $this->hasMany(Collateral::class);
     }
+
+    public function foreclosures()
+    {
+        return $this->hasMany(Foreclosure::class);
+    }
+
+    public function visits()
+    {
+        return $this->hasMany(Visit::class);
+    }
 }

@@ -61,9 +61,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </span>
                         <div class="dropdown-divider"></div>
                         <a href="{{ route('profile.show') }}" class="dropdown-item">Pengaturan</a>
+                        <a href="{{ route('profile.truncate') }}" class="dropdown-item" id="truncate-button">Reset Data</a>
                         <a href="{{ route('logout') }}" class="dropdown-item" id="logout-button">Keluar</a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
+                        </form>
+                        <form id="truncate-form" action="{{ route('profile.truncate') }}" method="POST" class="d-none">
+                            @csrf
+                            @method('DELETE')
                         </form>
                     </div>
                 </li>
@@ -249,6 +254,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     if (result.isConfirmed) {
                         $(this).closest('form.d-inline').submit();
                         $('#logout-form').submit();
+                    }
+                });
+            });
+            $(document).on('click', '#truncate-button', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Reset Data',
+                    text: "Anda yakin ingin reset data?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Iya, saya yakin!',
+                    cancelButtonText: 'Batalkan',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $(this).closest('form.d-inline').submit();
+                        $('#truncate-form').submit();
                     }
                 });
             });

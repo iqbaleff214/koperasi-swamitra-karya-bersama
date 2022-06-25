@@ -59,5 +59,6 @@ Route::middleware('auth')->group(function() {
 
     Route::get('/pengaturan', [HomeController::class, 'profile'])->name('profile.show');
     Route::post('/pengaturan', [HomeController::class, 'update'])->name('profile.update');
+    Route::delete('/pengaturan', [HomeController::class, 'truncate'])->name('profile.truncate');
 });
 

@@ -163,6 +163,8 @@ class CustomerController extends Controller
         try {
             DB::beginTransaction();
             $this->deleteImage($nasabah->photo);
+            $nasabah->visits()->delete();
+            $nasabah->foreclosures()->delete();
             $nasabah->deposits()->delete();
             $nasabah->loans()->delete();
             $nasabah->collaterals()->delete();

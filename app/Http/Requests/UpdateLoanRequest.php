@@ -28,6 +28,10 @@ class UpdateLoanRequest extends FormRequest
             'amount' => 'required',
             'installment' => 'required',
             'return_amount' => 'required',
+
+            'name' => ['required'],
+            'value' => ['required', 'numeric', 'gte:amount'],
+            'description' => 'nullable',
         ];
     }
 }
