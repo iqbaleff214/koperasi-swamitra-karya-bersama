@@ -105,7 +105,7 @@ class VisitController extends Controller
     {
         return view('pages.collection.visit.create', [
             'title' => $this->buildTitle('baru'),
-            'customers' => Customer::all(),
+            'customers' => Customer::where('status', 'active')->get(),
             'users' => User::where('role', 'collector')->get()
         ]);
     }

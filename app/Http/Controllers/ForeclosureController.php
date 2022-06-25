@@ -110,7 +110,7 @@ class ForeclosureController extends Controller
     {
         return view('pages.collection.foreclosure.create', [
             'title' => $this->buildTitle('baru'),
-            'customers' => Customer::all(),
+            'customers' => Customer::where('status', 'active')->get(),
         ]);
     }
 

@@ -96,7 +96,7 @@ class InstallmentController extends Controller
         }
         return view('pages.transaction.installment.index', [
             'title' => $this->title,
-            'customers' => Customer::all(),
+            'customers' => Customer::where('status', 'active')->get(),
         ]);
     }
 
@@ -109,7 +109,7 @@ class InstallmentController extends Controller
     {
         return view('pages.transaction.installment.create', [
             'title' => $this->buildTitle('baru'),
-            'customers' => Customer::all(),
+            'customers' => Customer::where('status', 'active')->get(),
         ]);
     }
 

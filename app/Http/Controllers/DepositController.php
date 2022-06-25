@@ -111,7 +111,7 @@ class DepositController extends Controller
     {
         return view('pages.transaction.deposit.create', [
             'title' => $this->buildTitle('baru'),
-            'customers' => Customer::all(),
+            'customers' => Customer::where('status', 'active')->get(),
             'types' => ['sukarela', 'wajib']
         ]);
     }
