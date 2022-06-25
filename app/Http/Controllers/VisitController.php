@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 class VisitController extends Controller
 {
@@ -118,9 +119,13 @@ class VisitController extends Controller
     public function store(StoreVisitRequest $request)
     {
         try {
+            DB::beginTransaction();
+            Customer::find($request->customer)->update(['status' => 'blacklist']);
             Visit::create($request->all());
+            DB::commit();
             return redirect()->route('collection.visit.index')->with('success', 'Berhasil menambahkan nasabah bermasalah!');
         } catch (\Throwable $th) {
+            DB::rollBack();
             return back()->with('error', $th->getMessage());
         }
     }
