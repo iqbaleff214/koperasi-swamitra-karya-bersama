@@ -84,6 +84,7 @@ class CustomerController extends Controller
             $data['photo'] = $this->storeImage($request);
             $customer = Customer::create($data);
             Deposit::create([
+                'created_at' => $request->joined_at,
                 'amount' => $request->get('amount'),
                 'current_balance' => $request->get('amount'),
                 'type' => 'pokok',
