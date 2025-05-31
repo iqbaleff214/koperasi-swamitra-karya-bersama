@@ -8,6 +8,7 @@ done
 if [ ! -f /var/www/.migrated ]; then
   php artisan migrate:fresh --force --seed
   touch /var/www/.migrated
+  php artisan storage:link
 fi
 
 php artisan optimize
