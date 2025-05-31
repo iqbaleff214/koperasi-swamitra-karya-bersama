@@ -14,8 +14,8 @@
     <header>
         <img src="{{ public_path('swamitra.jpeg') }}" alt="{{ $title }}" width="50px" class="mb-2" srcset="">
         <span class="d-block h3 mb-0">{{ strtoupper(config('app.name')) }}</span>
-        <span class="d-block">Jl. Pasar Lama No. 31 RT. 2 Kec. Banjarmasin Tengah</span>
-        <span class="d-block">Telp. 0511 - 3365471</span>
+        <span class="d-block">Jl. Sesama No. 47 RT. 16</span>
+        <span class="d-block">Telp. 62 851-4306-4088</span>
         <hr>
     </header>
     <section>
@@ -28,7 +28,7 @@
     <section class="mt-4">
         <div class="float-right">
             <span class="d-block">Mengetahui</span>
-            <span class="d-block">Banjarmasin, <span style="margin-left: 150px">2022</span></span>
+            <span class="d-block"><span style="margin-left: 150px">{{ date('Y') }}</span></span>
             <span class="d-block">Manager</span>
             <span class="d-block" style="margin-top: 75px">{{ $manager->name }}</span>
         </div>

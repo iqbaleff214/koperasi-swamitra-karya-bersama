@@ -13,7 +13,7 @@
                             <div class="col-10">
                                 <h2 class="my-3">Hai, {{ Auth::user()->username }}</h2>
                                 <p class="card-text h4 font-weight-light">
-                                    Selamat datang di halaman dashboard {{ config('app.name') }} Banjarmasin.
+                                    Selamat datang di halaman dashboard {{ config('app.name') }}.
                                 </p>
                             </div>
                         </div>
